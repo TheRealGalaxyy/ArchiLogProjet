@@ -10,6 +10,7 @@ const boardService = new BoardService(storage);
 const board = boardService.loadBoard() || new Board("Ollert");
 const domAdapter = new DOMAdapter(boardService);
 
+localStorage.clear()
 domAdapter.renderBoard(board);
 
 document.getElementById("add-list").addEventListener("click", () => {
