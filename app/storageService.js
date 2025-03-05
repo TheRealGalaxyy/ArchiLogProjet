@@ -1,3 +1,5 @@
+import { Board } from "../model/board.js";  
+
 export class StorageService {
     saveBoard(board) {
         localStorage.setItem("ollert_board", JSON.stringify(board));
