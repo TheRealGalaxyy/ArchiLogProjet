@@ -1,6 +1,6 @@
-import { Board } from "../model/board";
-import { Card } from "../model/card";
-import { List } from "../model/list";
+import { Board } from "../model/board.js";
+import { Card } from "../model/card.js";
+import { List } from "../model/list.js";
 
 export class BoardService {
   constructor(storage) {
