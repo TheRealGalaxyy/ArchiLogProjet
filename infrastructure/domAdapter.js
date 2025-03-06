@@ -11,40 +11,12 @@ export class DOMAdapter {
       const listElement = document.createElement("div");
       listElement.className = "list";
       listElement.innerHTML = `<h3>${list.name}</h3>`;
-      listElement.setAttribute("droppable", "true");
 
-      listElement.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        listElement.style.border = "2px dashed #007bff";
-      });
-
-      listElement.addEventListener("dragleave", () => {
-        listElement.style.border = "";
-      });
-
-      listElement.addEventListener("drop", (e) => {
-        e.preventDefault();
-        const draggedCardIndex = e.dataTransfer.getData("cardIndex");
-        const draggedListIndex = e.dataTransfer.getData("listIndex");
-
-        if (draggedCardIndex !== "" && draggedListIndex !== "") {
-          if (draggedListIndex !== listIndex) {
-            const draggedCard = this.boardService.board.lists[
-              draggedListIndex
-            ].cards.splice(draggedCardIndex, 1)[0];
-            this.boardService.board.lists[listIndex].addCard(draggedCard);
-            this.boardService.storage.saveBoard(this.boardService.board);
-            this.renderBoard(this.boardService.board);
-          }
-        }
-      });
-
-      // Bouton de suppression de la liste
       const deleteListBtn = document.createElement("button");
       deleteListBtn.innerText = "Supprimer la liste";
       deleteListBtn.addEventListener("click", () => {
         this.boardService.removeList(listIndex);
-        this.renderBoard(board);
+        this.renderBoard(this.boardService.board);
       });
       listElement.appendChild(deleteListBtn);
 
@@ -52,28 +24,10 @@ export class DOMAdapter {
         const cardElement = document.createElement("div");
         cardElement.className = "card";
         cardElement.innerHTML = `<p>${card.title}</p>`;
-        cardElement.setAttribute("draggable", "true");
 
-        cardElement.addEventListener("dragstart", (e) => {
-          e.dataTransfer.setData("cardIndex", cardIndex);
-          e.dataTransfer.setData("listIndex", listIndex);
-          e.target.style.opacity = 0.5;
+        cardElement.addEventListener("click", () => {
+          this.showCardModal(listIndex, cardIndex, card);
         });
-
-        cardElement.addEventListener("dragend", (e) => {
-          e.target.style.opacity = 1;
-          listElement.style.border = "";
-        });
-
-        // Bouton de suppression de la carte
-        const deleteCardBtn = document.createElement("button");
-        deleteCardBtn.innerText = "X";
-        deleteCardBtn.style.marginLeft = "10px";
-        deleteCardBtn.addEventListener("click", () => {
-          this.boardService.removeCard(listIndex, cardIndex);
-          this.renderBoard(board);
-        });
-        cardElement.appendChild(deleteCardBtn);
 
         listElement.appendChild(cardElement);
       });
@@ -88,9 +42,36 @@ export class DOMAdapter {
           this.renderBoard(this.boardService.board);
         }
       });
-
       listElement.appendChild(addCardBtn);
+
       boardContainer.appendChild(listElement);
     });
+  }
+
+  showCardModal(listIndex, cardIndex, card) {
+    const modal = document.getElementById("card-modal");
+    document.getElementById("modal-title").innerText = card.title;
+    document.getElementById("modal-description").innerText = card.description;
+
+    // Gérer la suppression de la carte
+    document.getElementById("delete-card").onclick = () => {
+      this.boardService.removeCard(listIndex, cardIndex);
+      this.renderBoard(this.boardService.board);
+      modal.style.display = "none";
+    };
+
+    modal.style.display = "block";
+
+    // Fermer la modale en cliquant sur la croix
+    document.querySelector(".close").onclick = () => {
+      modal.style.display = "none";
+    };
+
+    // Fermer la modale en cliquant en dehors du contenu
+    window.onclick = (event) => {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    };
   }
 }

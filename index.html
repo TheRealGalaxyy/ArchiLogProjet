@@ -1,18 +1,25 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ollert - Clone de Trello</title>
-    <link rel="stylesheet" href="index.css">
-</head>
-<body>
-
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
     <h1>Ollert - Le nouveau et meilleur Trello</h1>
     <button id="add-list">Ajouter une liste</button>
     <div id="board"></div>
 
-    <script type="module" src="index.js"></script>
+    <div id="card-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modal-title"></h2>
+        <p id="modal-description"></p>
+        <button id="delete-card">Supprimer</button>
+      </div>
+    </div>
 
-</body>
+    <script type="module" src="index.js"></script>
+  </body>
 </html>

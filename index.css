@@ -1,44 +1,72 @@
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f9f9f9;
-    margin: 0;
-    padding: 20px;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 20px;
 }
 
 #board {
-    display: flex;
-    gap: 20px;
-    padding: 20px;
-    overflow-x: auto;
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  overflow-x: auto;
 }
 
 .list {
-    background: #f4f4f4;
-    padding: 10px;
-    border-radius: 5px;
-    width: 250px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  background: #f4f4f4;
+  padding: 10px;
+  border-radius: 5px;
+  width: 250px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 .card {
-    background: white;
-    padding: 8px;
-    margin: 5px 0;
-    border-radius: 3px;
-    box-shadow: 0 0 3px rgba(0,0,0,0.2);
+  background: white;
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 3px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
 }
 
 button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px;
-    margin-top: 10px;
-    cursor: pointer;
-    border-radius: 5px;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin: 2px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
 button:hover {
-    background: #0056b3;
+  background: #0056b3;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
 }
