@@ -1,47 +1,168 @@
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background-color: #f9f9f9;
+/* Global styles */
+* {
   margin: 0;
-  padding: 20px;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-#board {
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #e9ecef;
+  color: #333;
   display: flex;
-  gap: 20px;
-  padding: 20px;
-  overflow-x: auto;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+  flex-direction: column;
 }
 
-.list {
-  background: #f4f4f4;
-  padding: 10px;
-  border-radius: 5px;
-  width: 250px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-}
-
-.card {
-  background: white;
-  padding: 8px;
-  margin: 5px 0;
-  border-radius: 3px;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+h1 {
+  font-size: 2rem;
+  color: #343a40;
+  margin-bottom: 20px;
+  font-weight: 600;
 }
 
 button {
-  background: #007bff;
+  background-color: #007bff;
   color: white;
+  font-size: 1rem;
   border: none;
-  padding: 10px;
-  margin: 2px;
-  margin-top: 10px;
+  padding: 12px 20px;
+  border-radius: 8px;
   cursor: pointer;
-  border-radius: 5px;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background: #0056b3;
+  background-color: #0056b3;
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Board styles */
+#board {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 20px;
+  justify-content: flex-start;
+  width: 90%;
+}
+
+.list {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 280px;
+  min-height: 200px;
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.list:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.list h3 {
+  font-size: 1.3rem;
+  color: #495057;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.list p {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 10px;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 10px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: move;
+  transition: transform 0.3s ease;
+  position: relative;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.card p {
+  font-size: 1rem;
+  color: #495057;
+  margin-bottom: 10px;
+}
+
+.card button {
+  background-color: #dc3545;
+  color: white;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.card button:hover {
+  background-color: #c82333;
+}
+
+/* Add card button */
+button.add-card {
+  background-color: #28a745;
+  width: 100%;
+  margin-top: 20px;
+}
+
+button.add-card:hover {
+  background-color: #218838;
+}
+
+/* Delete List button */
+.list button.delete-list {
+  background-color: #dc3545;
+  color: white;
+  width: 100%;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: auto;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.list button.delete-list:hover {
+  background-color: #c82333;
+}
+
+.card button.delete-card {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 8px;
+  font-size: 0.8rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.card button.delete-card:hover {
+  background-color: #c82333;
 }
 
 .modal {
