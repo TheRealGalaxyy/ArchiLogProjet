@@ -43,14 +43,9 @@ export class DOMAdapter {
         }
       });
 
-      // Bouton pour supprimer la liste
-      const deleteListBtn = document.createElement("button");
-      deleteListBtn.innerText = "Supprimer la liste";
-      deleteListBtn.addEventListener("click", () => {
-        this.boardService.removeList(listIndex);
-        this.renderBoard(this.boardService.board);
-      });
-      listElement.appendChild(deleteListBtn);
+      // Créer un conteneur pour les cartes et les boutons
+      const listContent = document.createElement("div");
+      listContent.className = "list-content";
 
       list.cards.forEach((card, cardIndex) => {
         const cardElement = document.createElement("div");
@@ -75,8 +70,12 @@ export class DOMAdapter {
           this.showCardModal(listIndex, cardIndex, card);
         });
 
-        listElement.appendChild(cardElement);
+        listContent.appendChild(cardElement);
       });
+
+      // Créer les boutons pour ajouter une carte et supprimer la liste
+      const buttonsContainer = document.createElement("div");
+      buttonsContainer.className = "buttons-container";
 
       // Bouton pour ajouter une carte
       const addCardBtn = document.createElement("button");
@@ -89,7 +88,24 @@ export class DOMAdapter {
           this.renderBoard(this.boardService.board);
         }
       });
-      listElement.appendChild(addCardBtn);
+      addCardBtn.style.marginBottom = "10px"; 
+      buttonsContainer.appendChild(addCardBtn);
+
+      // Bouton pour supprimer la liste 
+      const deleteListBtn = document.createElement("button");
+      deleteListBtn.innerText = "Supprimer la liste";
+      deleteListBtn.style.backgroundColor = "red"; 
+      deleteListBtn.style.color = "white"; 
+      deleteListBtn.style.marginBottom = "10px"; 
+      deleteListBtn.addEventListener("click", () => {
+        this.boardService.removeList(listIndex);
+        this.renderBoard(this.boardService.board);
+      });
+      buttonsContainer.appendChild(deleteListBtn);
+
+      // Ajouter le contenu de la liste et les boutons à la liste
+      listElement.appendChild(listContent);
+      listElement.appendChild(buttonsContainer);
 
       boardContainer.appendChild(listElement);
     });
@@ -103,10 +119,12 @@ export class DOMAdapter {
     // Vérifier si le bouton Modifier existe déjà dans la modale
     let editCardBtn = document.getElementById("edit-card-btn");
     if (!editCardBtn) {
-      // Ajouter le bouton de modification dans la modale
       editCardBtn = document.createElement("button");
-      editCardBtn.id = "edit-card-btn"; // Ajouter un ID pour le retrouver facilement
+      editCardBtn.id = "edit-card-btn";
       editCardBtn.innerText = "Modifier la carte";
+      editCardBtn.style.backgroundColor = "orange";
+      editCardBtn.style.color = "white";
+      editCardBtn.style.marginBottom = "10px";
       editCardBtn.addEventListener("click", () => {
         const newTitle = prompt("Nouveau titre de la carte :", card.title);
         const newDescription = prompt("Nouvelle description de la carte :", card.description);
@@ -116,7 +134,7 @@ export class DOMAdapter {
           card.description = newDescription;
           this.boardService.storage.saveBoard(this.boardService.board);
           this.renderBoard(this.boardService.board);
-          modal.style.display = "none"; // Fermer la modale après modification
+          modal.style.display = "none";
         }
       });
 
@@ -125,8 +143,10 @@ export class DOMAdapter {
       modalContent.appendChild(editCardBtn);
     }
 
-    // Ajouter le bouton de suppression de la carte
+    // Ajouter le bouton de suppression de la carte (en rouge)
     const deleteCardBtn = document.getElementById("delete-card");
+    deleteCardBtn.style.backgroundColor = "red";
+    deleteCardBtn.style.color = "white";
     deleteCardBtn.onclick = () => {
       this.boardService.removeCard(listIndex, cardIndex);
       this.renderBoard(this.boardService.board);
