@@ -7,16 +7,19 @@ export class BoardService {
     this.storage = storage;
     this.board = this.storage.loadBoard() || new Board("Ollert");
   }
+
   addList(name) {
     const list = new List(name);
     this.board.addList(list);
     this.storage.saveBoard(this.board);
   }
+
   addCard(listIndex, title, description) {
     const card = new Card(title, description);
     this.board.lists[listIndex].addCard(card);
     this.storage.saveBoard(this.board);
   }
+
   removeList(listIndex) {
     this.board.lists.splice(listIndex, 1);
     this.storage.saveBoard(this.board);
@@ -24,6 +27,13 @@ export class BoardService {
 
   removeCard(listIndex, cardIndex) {
     this.board.lists[listIndex].cards.splice(cardIndex, 1);
+    this.storage.saveBoard(this.board);
+  }
+
+  updateCard(listIndex, cardIndex, newTitle, newDescription) {
+    const card = this.board.lists[listIndex].cards[cardIndex];
+    card.title = newTitle;
+    card.description = newDescription;
     this.storage.saveBoard(this.board);
   }
 

@@ -75,6 +75,14 @@ export class DOMAdapter {
           this.showCardModal(listIndex, cardIndex, card);
         });
 
+        // Ajouter un bouton pour modifier la carte
+        const editCardBtn = document.createElement("button");
+        editCardBtn.innerText = "Modifier";
+        editCardBtn.addEventListener("click", () => {
+          this.editCard(listIndex, cardIndex);
+        });
+        cardElement.appendChild(editCardBtn);
+
         listElement.appendChild(cardElement);
       });
 
@@ -120,5 +128,15 @@ export class DOMAdapter {
         modal.style.display = "none";
       }
     };
+  }
+
+  editCard(listIndex, cardIndex) {
+    const newTitle = prompt("Modifier le titre de la carte :", this.boardService.board.lists[listIndex].cards[cardIndex].title);
+    const newDescription = prompt("Modifier la description de la carte :", this.boardService.board.lists[listIndex].cards[cardIndex].description);
+
+    if (newTitle !== null && newDescription !== null) {
+      this.boardService.updateCard(listIndex, cardIndex, newTitle, newDescription);
+      this.renderBoard(this.boardService.board);
+    }
   }
 }
