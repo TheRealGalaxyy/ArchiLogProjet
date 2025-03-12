@@ -35,18 +35,27 @@ export class BoardService {
   }
 
   async addList(name) {
-    const response = await fetch(
-      "http://localhost:8000/index.php?action=addList",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name }),
+    try {
+      const response = await fetch(
+        "http://localhost:8000/index.php?action=addList",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to add list");
       }
-    );
-    const newList = await response.json();
-    this.board.addList(new List(newList.name));
+
+      const newList = await response.json();
+      this.board.addList(new List(newList.name));
+    } catch (error) {
+      console.error("Error adding list:", error);
+    }
   }
 
   async addCard(listIndex, title, description) {

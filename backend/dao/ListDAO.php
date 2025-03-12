@@ -13,6 +13,10 @@ class ListDAO
 
     public function addList(int $boardId, string $name): void
     {
+        if (empty($name)) {
+            throw new InvalidArgumentException("Le nom de la liste ne peut pas être vide.");
+        }
+
         $query = 'INSERT INTO lists (board_id, name) VALUES (:board_id, :name)';
         $stmt = $this->db->prepare($query);
         $stmt->execute([
