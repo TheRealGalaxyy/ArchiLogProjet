@@ -1,6 +1,3 @@
-import { Board } from "./model/board.js";
-import { Card } from "./model/card.js";
-import { List } from "./model/list.js";
 import { BoardService } from "./app/boardService.js";
 import { DOMAdapter } from "./infrastructure/domAdapter.js";
 

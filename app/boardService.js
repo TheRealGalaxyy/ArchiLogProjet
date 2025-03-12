@@ -1,3 +1,7 @@
+import { Board } from "../model/board.js";
+import { List } from "../model/list.js";
+import { Card } from "../model/card.js";
+
 export class BoardService {
   constructor() {
     this.board = null;
