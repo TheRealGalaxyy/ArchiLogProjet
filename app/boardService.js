@@ -4,19 +4,35 @@ export class BoardService {
   }
 
   async loadBoard() {
-    const response = await fetch(
-      "http://localhost/backend/public/index.php?action=getBoard"
-    );
-    const data = await response.json();
-    this.board = new Board(data.name);
-    console.log(this.board);
-    this.board.lists = data.lists || [];
-    return this.board;
+    try {
+      const response = await fetch(
+        "http://localhost:8000/index.php?action=getBoard"
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch board");
+      }
+      const data = await response.json();
+      this.board = new Board(data.name);
+      this.board.lists = data.lists.map((listData) => {
+        const list = new List(listData.name);
+        list.id = listData.id;
+        list.cards = listData.cards.map(
+          (cardData) => new Card(cardData.title, cardData.description)
+        );
+        return list;
+      });
+      return this.board;
+    } catch (error) {
+      console.error("Error loading board:", error);
+      this.board = new Board("Ollert");
+      this.board.lists = [];
+      return this.board;
+    }
   }
 
   async addList(name) {
     const response = await fetch(
-      "http://localhost/backend/public/index.php?action=addList",
+      "http://localhost:8000/index.php?action=addList",
       {
         method: "POST",
         headers: {
@@ -32,7 +48,7 @@ export class BoardService {
   async addCard(listIndex, title, description) {
     const listId = this.board.lists[listIndex].id;
     const response = await fetch(
-      "http://localhost/backend/public/index.php?action=addCard",
+      "http://localhost:8000/index.php?action=addCard",
       {
         method: "POST",
         headers: {
@@ -50,7 +66,7 @@ export class BoardService {
   async removeList(listIndex) {
     const listId = this.board.lists[listIndex].id;
     await fetch(
-      `http://localhost/backend/public/index.php?action=deleteList&listId=${listId}`,
+      `http://localhost:8000/index.php?action=deleteList&listId=${listId}`,
       {
         method: "DELETE",
       }
@@ -61,7 +77,7 @@ export class BoardService {
   async removeCard(listIndex, cardIndex) {
     const cardId = this.board.lists[listIndex].cards[cardIndex].id;
     await fetch(
-      `http://localhost/backend/public/index.php?action=deleteCard&cardId=${cardId}`,
+      `http://localhost:8000/index.php?action=deleteCard&cardId=${cardId}`,
       {
         method: "DELETE",
       }

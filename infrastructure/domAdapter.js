@@ -12,37 +12,6 @@ export class DOMAdapter {
       listElement.className = "list";
       listElement.innerHTML = `<h3>${list.name}</h3>`;
 
-      // Permettre le drop sur la liste
-      listElement.setAttribute("droppable", "true");
-      listElement.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        listElement.style.border = "2px dashed #007bff";
-      });
-
-      listElement.addEventListener("dragleave", () => {
-        listElement.style.border = "";
-      });
-
-      listElement.addEventListener("drop", (e) => {
-        e.preventDefault();
-        listElement.style.border = "";
-
-        const draggedCardIndex = e.dataTransfer.getData("cardIndex");
-        const draggedListIndex = e.dataTransfer.getData("listIndex");
-
-        if (draggedCardIndex !== null && draggedListIndex !== null) {
-          const draggedCard = this.boardService.board.lists[
-            draggedListIndex
-          ].cards.splice(draggedCardIndex, 1)[0];
-
-          if (draggedCard) {
-            this.boardService.board.lists[listIndex].cards.push(draggedCard);
-            this.boardService.storage.saveBoard(this.boardService.board);
-            this.renderBoard(this.boardService.board);
-          }
-        }
-      });
-
       // Bouton pour supprimer la liste
       const deleteListBtn = document.createElement("button");
       deleteListBtn.innerText = "Supprimer la liste";
@@ -52,28 +21,20 @@ export class DOMAdapter {
       });
       listElement.appendChild(deleteListBtn);
 
+      // Afficher les cartes
       list.cards.forEach((card, cardIndex) => {
         const cardElement = document.createElement("div");
         cardElement.className = "card";
         cardElement.innerHTML = `<p>${card.title}</p>`;
 
-        // Rendre la carte draggable
-        cardElement.setAttribute("draggable", "true");
-
-        cardElement.addEventListener("dragstart", (e) => {
-          e.dataTransfer.setData("cardIndex", cardIndex);
-          e.dataTransfer.setData("listIndex", listIndex);
-          e.target.style.opacity = 0.5;
+        // Bouton pour supprimer la carte
+        const deleteCardBtn = document.createElement("button");
+        deleteCardBtn.innerText = "Supprimer";
+        deleteCardBtn.addEventListener("click", () => {
+          this.boardService.removeCard(listIndex, cardIndex);
+          this.renderBoard(this.boardService.board);
         });
-
-        cardElement.addEventListener("dragend", (e) => {
-          e.target.style.opacity = 1;
-        });
-
-        // Ouvrir la modale au clic sur la carte
-        cardElement.addEventListener("click", () => {
-          this.showCardModal(listIndex, cardIndex, card);
-        });
+        cardElement.appendChild(deleteCardBtn);
 
         listElement.appendChild(cardElement);
       });
