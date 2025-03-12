@@ -75,14 +75,6 @@ export class DOMAdapter {
           this.showCardModal(listIndex, cardIndex, card);
         });
 
-        // Ajouter un bouton pour modifier la carte
-        const editCardBtn = document.createElement("button");
-        editCardBtn.innerText = "Modifier";
-        editCardBtn.addEventListener("click", () => {
-          this.editCard(listIndex, cardIndex);
-        });
-        cardElement.appendChild(editCardBtn);
-
         listElement.appendChild(cardElement);
       });
 
@@ -108,8 +100,34 @@ export class DOMAdapter {
     document.getElementById("modal-title").innerText = card.title;
     document.getElementById("modal-description").innerText = card.description;
 
-    // Gérer la suppression de la carte
-    document.getElementById("delete-card").onclick = () => {
+    // Vérifier si le bouton Modifier existe déjà dans la modale
+    let editCardBtn = document.getElementById("edit-card-btn");
+    if (!editCardBtn) {
+      // Ajouter le bouton de modification dans la modale
+      editCardBtn = document.createElement("button");
+      editCardBtn.id = "edit-card-btn"; // Ajouter un ID pour le retrouver facilement
+      editCardBtn.innerText = "Modifier la carte";
+      editCardBtn.addEventListener("click", () => {
+        const newTitle = prompt("Nouveau titre de la carte :", card.title);
+        const newDescription = prompt("Nouvelle description de la carte :", card.description);
+
+        if (newTitle) {
+          card.title = newTitle;
+          card.description = newDescription;
+          this.boardService.storage.saveBoard(this.boardService.board);
+          this.renderBoard(this.boardService.board);
+          modal.style.display = "none"; // Fermer la modale après modification
+        }
+      });
+
+      // Ajouter le bouton de modification à la modale
+      const modalContent = document.querySelector(".modal-content");
+      modalContent.appendChild(editCardBtn);
+    }
+
+    // Ajouter le bouton de suppression de la carte
+    const deleteCardBtn = document.getElementById("delete-card");
+    deleteCardBtn.onclick = () => {
       this.boardService.removeCard(listIndex, cardIndex);
       this.renderBoard(this.boardService.board);
       modal.style.display = "none";
@@ -128,15 +146,5 @@ export class DOMAdapter {
         modal.style.display = "none";
       }
     };
-  }
-
-  editCard(listIndex, cardIndex) {
-    const newTitle = prompt("Modifier le titre de la carte :", this.boardService.board.lists[listIndex].cards[cardIndex].title);
-    const newDescription = prompt("Modifier la description de la carte :", this.boardService.board.lists[listIndex].cards[cardIndex].description);
-
-    if (newTitle !== null && newDescription !== null) {
-      this.boardService.updateCard(listIndex, cardIndex, newTitle, newDescription);
-      this.renderBoard(this.boardService.board);
-    }
   }
 }
