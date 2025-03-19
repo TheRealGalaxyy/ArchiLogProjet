@@ -12,7 +12,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   text-align: center;
   flex-direction: column;
 }
@@ -191,3 +190,4 @@ button.add-card:hover {
   font-weight: bold;
   cursor: pointer;
 }
+

@@ -4,10 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ollert - Clone de Trello</title>
-    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="/pages/css/index.css" />
+    <link rel="stylesheet" href="/pages/css/header.css">
   </head>
+
+  <header>
+    <h1>Ollert</h1>
+    <nav>
+        <ul id="menu">
+            <li><a href="/pages/html/login.html">Se connecter</a></li>
+            <li><a href="/pages/html/register.html">S'inscrire</a></li>
+        </ul>
+        <button id="menu-toggle">☰</button>
+    </nav>
+  </header>
+
   <body>
-    <h1>Ollert - Le nouveau et meilleur Trello</h1>
     <button id="add-list">Ajouter une liste</button>
     <div id="board"></div>
 
@@ -20,6 +32,6 @@
       </div>
     </div>
 
-    <script type="module" src="index.js"></script>
+    <script type="module" src="/pages/js/index.js"></script>
   </body>
 </html>
