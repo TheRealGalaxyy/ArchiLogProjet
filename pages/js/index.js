@@ -12,15 +12,11 @@ const domAdapter = new DOMAdapter(boardService);
 
 domAdapter.renderBoard(board);
 
-document.getElementById("add-list").addEventListener("click", () => {
-  const listName = prompt("Nom de la liste :");
-  if (listName) {
-    boardService.addList(listName);
-    domAdapter.renderBoard(board);
-  }
+const addListButton = document.getElementById("add-list");
+addListButton.addEventListener("click", () => {
+  domAdapter.openAddListModal();
 });
 
-document.getElementById("menu-toggle").addEventListener("click", function() {
+document.getElementById("menu-toggle").addEventListener("click", function () {
   document.getElementById("menu").classList.toggle("show");
 });
-
