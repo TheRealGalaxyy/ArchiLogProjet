@@ -165,29 +165,95 @@ button.add-card:hover {
   background-color: #c82333;
 }
 
+/* Modals styles */
 .modal {
-  display: none;
+  display: none; /* Par défaut, les modals sont cachés */
   position: fixed;
   z-index: 1;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.4); /* Fond sombre transparent */
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 .modal-content {
   background-color: #fff;
-  margin: 15% auto;
+  border-radius: 8px;
+  width: 400px;
   padding: 20px;
-  border: 1px solid #888;
-  width: 50%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre pour l'effet de profondeur */
+}
+
+h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #495057;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+label {
+  font-size: 1rem;
+  color: #6c757d;
+  margin-bottom: 8px;
+  display: block;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  font-size: 1rem;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #007bff;
+  outline: none;
+  background-color: #fff;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button.cancel-btn {
+  background-color: #ccc;
+}
+
+button.cancel-btn:hover {
+  background-color: #999;
 }
 
 .close {
-  float: right;
-  font-size: 28px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
   font-weight: bold;
+  color: #333;
   cursor: pointer;
+}
+
+.close:hover {
+  color: #007bff;
 }

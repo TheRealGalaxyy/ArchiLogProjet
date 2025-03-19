@@ -81,22 +81,17 @@ export class DOMAdapter {
       const addCardBtn = document.createElement("button");
       addCardBtn.innerText = "Ajouter une carte";
       addCardBtn.addEventListener("click", () => {
-        const title = prompt("Titre de la carte :");
-        const description = prompt("Description de la carte :");
-        if (title) {
-          this.boardService.addCard(listIndex, title, description);
-          this.renderBoard(this.boardService.board);
-        }
+        this.openAddCardModal(listIndex);
       });
-      addCardBtn.style.marginBottom = "10px"; 
+      addCardBtn.style.marginBottom = "10px";
       buttonsContainer.appendChild(addCardBtn);
 
-      // Bouton pour supprimer la liste 
+      // Bouton pour supprimer la liste
       const deleteListBtn = document.createElement("button");
       deleteListBtn.innerText = "Supprimer la liste";
-      deleteListBtn.style.backgroundColor = "red"; 
-      deleteListBtn.style.color = "white"; 
-      deleteListBtn.style.marginBottom = "10px"; 
+      deleteListBtn.style.backgroundColor = "red";
+      deleteListBtn.style.color = "white";
+      deleteListBtn.style.marginBottom = "10px";
       deleteListBtn.addEventListener("click", () => {
         this.boardService.removeList(listIndex);
         this.renderBoard(this.boardService.board);
@@ -116,34 +111,28 @@ export class DOMAdapter {
     document.getElementById("modal-title").innerText = card.title;
     document.getElementById("modal-description").innerText = card.description;
 
-    // Vérifier si le bouton Modifier existe déjà dans la modale
-    let editCardBtn = document.getElementById("edit-card-btn");
-    if (!editCardBtn) {
-      editCardBtn = document.createElement("button");
-      editCardBtn.id = "edit-card-btn";
-      editCardBtn.innerText = "Modifier la carte";
-      editCardBtn.style.backgroundColor = "orange";
-      editCardBtn.style.color = "white";
-      editCardBtn.style.marginBottom = "10px";
-      editCardBtn.addEventListener("click", () => {
-        const newTitle = prompt("Nouveau titre de la carte :", card.title);
-        const newDescription = prompt("Nouvelle description de la carte :", card.description);
+    const modalContent = document.querySelector(".modal-content");
 
-        if (newTitle) {
-          card.title = newTitle;
-          card.description = newDescription;
-          this.boardService.storage.saveBoard(this.boardService.board);
-          this.renderBoard(this.boardService.board);
-          modal.style.display = "none";
-        }
-      });
+    // Supprimer l'ancien bouton Modifier s'il existe
+    const oldEditBtn = document.getElementById("edit-card-btn");
+    if (oldEditBtn) oldEditBtn.remove();
 
-      // Ajouter le bouton de modification à la modale
-      const modalContent = document.querySelector(".modal-content");
-      modalContent.appendChild(editCardBtn);
-    }
+    // Ajouter le bouton Modifier
+    let editCardBtn = document.createElement("button");
+    editCardBtn.id = "edit-card-btn";
+    editCardBtn.innerText = "Modifier la carte";
+    editCardBtn.style.backgroundColor = "orange";
+    editCardBtn.style.color = "white";
+    editCardBtn.style.marginBottom = "10px";
 
-    // Ajouter le bouton de suppression de la carte (en rouge)
+    editCardBtn.addEventListener("click", () => {
+      // Appeler la méthode pour ouvrir le modal d'édition de la carte
+      this.openEditCardModal(listIndex, cardIndex, card);
+    });
+
+    modalContent.appendChild(editCardBtn);
+
+    // Gestion de la suppression de la carte
     const deleteCardBtn = document.getElementById("delete-card");
     deleteCardBtn.style.backgroundColor = "red";
     deleteCardBtn.style.color = "white";
@@ -153,14 +142,157 @@ export class DOMAdapter {
       modal.style.display = "none";
     };
 
-    modal.style.display = "block";
+    // Affichage du modal
+    modal.style.display = "flex";
+
+    // Empêcher la fermeture si on clique dans le contenu
+    modalContent.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+
+    // Fermer la modale en cliquant en dehors du contenu
+    modal.addEventListener("click", (event) => {
+      modal.style.display = "none";
+    });
 
     // Fermer la modale en cliquant sur la croix
     document.querySelector(".close").onclick = () => {
       modal.style.display = "none";
     };
+  }
 
-    // Fermer la modale en cliquant en dehors du contenu
+  openAddCardModal(listIndex) {
+    const modal = document.getElementById("add-card-modal");
+    const saveButton = document.getElementById("save-card");
+    const closeButton = document.querySelector("#add-card-modal .close");
+    const cancelButton = document.getElementById("cancel-card");
+
+    // Réinitialiser les champs
+    document.getElementById("card-title").value = "";
+    document.getElementById("card-description").value = "";
+
+    // Afficher le modal
+    modal.style.display = "flex";
+
+    // Ajouter la carte lors du clic sur "Ajouter"
+    saveButton.onclick = () => {
+      const title = document.getElementById("card-title").value.trim();
+      const description = document
+        .getElementById("card-description")
+        .value.trim();
+
+      if (title) {
+        this.boardService.addCard(listIndex, title, description);
+        this.renderBoard(this.boardService.board);
+        modal.style.display = "none"; // ✅ Fermer le modal après l'ajout
+      } else {
+        alert("Le titre est obligatoire !");
+      }
+    };
+
+    // Fermer le modal en cliquant sur la croix
+    closeButton.onclick = () => {
+      modal.style.display = "none";
+    };
+
+    // Fermer le modal en cliquant sur "Annuler"
+    cancelButton.onclick = () => {
+      modal.style.display = "none";
+    };
+
+    // Fermer le modal en cliquant en dehors
+    window.onclick = (event) => {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    };
+  }
+  openAddListModal() {
+    const modal = document.getElementById("add-list-modal");
+    const saveButton = document.getElementById("save-list");
+    const closeButton = document.querySelector("#add-list-modal .close");
+    const cancelButton = document.getElementById("cancel-list");
+
+    // Réinitialiser le champ
+    document.getElementById("list-name").value = "";
+
+    // Afficher le modal
+    modal.style.display = "flex";
+
+    // Ajouter la liste lors du clic sur "Ajouter"
+    saveButton.onclick = () => {
+      const listName = document.getElementById("list-name").value.trim();
+
+      if (listName) {
+        this.boardService.addList(listName);
+        this.renderBoard(this.boardService.board);
+        modal.style.display = "none"; // ✅ Fermer le modal après l'ajout
+      } else {
+        alert("Le nom de la liste est obligatoire !");
+      }
+    };
+
+    // Fermer le modal en cliquant sur la croix
+    closeButton.onclick = () => {
+      modal.style.display = "none";
+    };
+
+    // Fermer le modal en cliquant sur "Annuler"
+    cancelButton.onclick = () => {
+      modal.style.display = "none";
+    };
+
+    // Fermer le modal en cliquant en dehors
+    window.onclick = (event) => {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    };
+  }
+
+  openEditCardModal(listIndex, cardIndex, card) {
+    const modal = document.getElementById("edit-card-modal");
+    const saveButton = document.getElementById("save-edited-card");
+    const closeButton = document.querySelector("#edit-card-modal .close");
+    const cancelButton = document.getElementById("cancel-edit-card");
+
+    // Pré-remplir les champs avec les données actuelles de la carte
+    document.getElementById("edit-card-title").value = card.title;
+    document.getElementById("edit-card-description").value = card.description;
+
+    // Afficher le modal
+    modal.style.display = "flex";
+
+    // Sauvegarder les modifications lors du clic sur "Sauvegarder"
+    saveButton.onclick = () => {
+      const newTitle = document.getElementById("edit-card-title").value.trim();
+      const newDescription = document
+        .getElementById("edit-card-description")
+        .value.trim();
+
+      if (newTitle) {
+        // Mettre à jour la carte avec les nouvelles informations
+        card.title = newTitle;
+        card.description = newDescription;
+        this.boardService.storage.saveBoard(this.boardService.board);
+        this.renderBoard(this.boardService.board);
+        modal.style.display = "none"; // ✅ Fermer le modal après la sauvegarde
+      } else {
+        alert("Le titre est obligatoire !");
+      }
+    };
+
+    // Fermer le modal en cliquant sur la croix
+    closeButton.onclick = () => {
+      modal.style.display = "none";
+    };
+
+    // Fermer le modal en cliquant sur "Annuler"
+    cancelButton.onclick = () => {
+      modal.style.display = "none";
+    };
+
+    // Fermer le modal en cliquant en dehors
     window.onclick = (event) => {
       if (event.target === modal) {
         modal.style.display = "none";

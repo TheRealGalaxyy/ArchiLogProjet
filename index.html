@@ -19,6 +19,56 @@
         <button id="delete-card">Supprimer</button>
       </div>
     </div>
+    <div id="add-card-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Ajouter une carte</h2>
+        <label for="card-title">Titre :</label>
+        <input type="text" id="card-title" placeholder="Titre de la carte" />
+
+        <label for="card-description">Description :</label>
+        <textarea
+          id="card-description"
+          placeholder="Description de la carte"
+        ></textarea>
+
+        <button id="save-card">Ajouter</button>
+        <button id="cancel-card" class="cancel-btn">Annuler</button>
+      </div>
+    </div>
+    <div id="add-list-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Ajouter une liste</h2>
+        <label for="list-name">Nom de la liste :</label>
+        <input type="text" id="list-name" placeholder="Nom de la liste" />
+
+        <button id="save-list">Ajouter</button>
+        <button id="cancel-list" class="cancel-btn">Annuler</button>
+      </div>
+    </div>
+    <div id="edit-card-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Modifier la carte</h2>
+        <label for="edit-card-title">Titre de la carte</label>
+        <input
+          type="text"
+          id="edit-card-title"
+          placeholder="Nouveau titre"
+          required
+        />
+        <label for="edit-card-description">Description</label>
+        <textarea
+          id="edit-card-description"
+          placeholder="Nouvelle description"
+        ></textarea>
+        <div class="buttons-container">
+          <button id="save-edited-card">Sauvegarder</button>
+          <button id="cancel-edit-card" class="cancel-btn">Annuler</button>
+        </div>
+      </div>
+    </div>
 
     <script type="module" src="index.js"></script>
   </body>
