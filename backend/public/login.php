@@ -19,6 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     } else {
         header('Location: ../../pages/html/login.html?login=error');
+        print_r($user);
+        print_r($password);
         exit();
     }
 }

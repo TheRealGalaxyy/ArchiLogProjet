@@ -40,13 +40,28 @@ const checkSession = async () => {
         });
     } else {
       // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
-      window.location.href = "/pages/html/login.html";
+      window.location.href = "./pages/html/login.html";
     }
   } catch (error) {
     console.error("Erreur lors de la vérification de la session :", error);
     alert("Une erreur est survenue. Veuillez réessayer.");
   }
 };
+
+// se deco
+document.getElementById("logout-btn")?.addEventListener("click", async () => {
+  try {
+    const response = await fetch(
+      "http://localhost/archilog/backend/public/logout.php"
+    );
+    const data = await response.json();
+    if (data.success) {
+      window.location.href = "./pages/html/login.html";
+    }
+  } catch (error) {
+    console.error("Erreur lors de la déconnexion :", error);
+  }
+});
 
 // Exécuter la vérification de la session au chargement de la page
 checkSession();
