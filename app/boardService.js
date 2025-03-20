@@ -1,43 +1,100 @@
 import { Board } from "../model/board.js";
-import { Card } from "../model/card.js";
 import { List } from "../model/list.js";
+import { Card } from "../model/card.js";
 
 export class BoardService {
-  constructor(storage) {
-    this.storage = storage;
-    this.board = this.storage.loadBoard() || new Board("Ollert");
+  constructor() {
+    this.board = null;
   }
 
-  addList(name) {
-    const list = new List(name);
-    this.board.addList(list);
-    this.storage.saveBoard(this.board);
+  async loadBoard() {
+    try {
+      const response = await fetch(
+        "http://localhost/archilog/backend/public/index.php?action=getBoard"
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch board");
+      }
+      const data = await response.json();
+      this.board = new Board(data.name);
+      this.board.lists = data.lists.map((listData) => {
+        const list = new List(listData.name);
+        list.id = listData.id;
+        list.cards = listData.cards.map(
+          (cardData) => new Card(cardData.title, cardData.description)
+        );
+        return list;
+      });
+      return this.board;
+    } catch (error) {
+      console.error("Error loading board:", error);
+      this.board = new Board("Ollert");
+      this.board.lists = [];
+      return this.board;
+    }
   }
 
-  addCard(listIndex, title, description) {
-    const card = new Card(title, description);
-    this.board.lists[listIndex].addCard(card);
-    this.storage.saveBoard(this.board);
+  async addList(name) {
+    try {
+      const response = await fetch(
+        "http://localhost/archilog/backend/public/index.php?action=addList",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to add list");
+      }
+
+      const newList = await response.json();
+      this.board.addList(new List(newList.name));
+    } catch (error) {
+      console.error("Error adding list:", error);
+    }
   }
 
-  removeList(listIndex) {
+  async addCard(listIndex, title, description) {
+    const listId = this.board.lists[listIndex].id;
+    const response = await fetch(
+      "http://localhost/archilog/backend/public/index.php?action=addCard",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ listId, title, description }),
+      }
+    );
+    const newCard = await response.json();
+    this.board.lists[listIndex].addCard(
+      new Card(newCard.title, newCard.description)
+    );
+  }
+
+  async removeList(listIndex) {
+    const listId = this.board.lists[listIndex].id;
+    await fetch(
+      `http://localhost/archilog/backend/public/index.php?action=deleteList&listId=${listId}`,
+      {
+        method: "DELETE",
+      }
+    );
     this.board.lists.splice(listIndex, 1);
-    this.storage.saveBoard(this.board);
   }
 
-  removeCard(listIndex, cardIndex) {
+  async removeCard(listIndex, cardIndex) {
+    const cardId = this.board.lists[listIndex].cards[cardIndex].id;
+    await fetch(
+      `http://localhost/archilog/backend/public/index.php?action=deleteCard&cardId=${cardId}`,
+      {
+        method: "DELETE",
+      }
+    );
     this.board.lists[listIndex].cards.splice(cardIndex, 1);
-    this.storage.saveBoard(this.board);
-  }
-
-  updateCard(listIndex, cardIndex, newTitle, newDescription) {
-    const card = this.board.lists[listIndex].cards[cardIndex];
-    card.title = newTitle;
-    card.description = newDescription;
-    this.storage.saveBoard(this.board);
-  }
-
-  loadBoard() {
-    return this.board;
   }
 }

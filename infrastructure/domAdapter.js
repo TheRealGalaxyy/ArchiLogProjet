@@ -12,40 +12,14 @@ export class DOMAdapter {
       listElement.className = "list";
       listElement.innerHTML = `<h3>${list.name}</h3>`;
 
-      // Permettre le drop sur la liste
-      listElement.setAttribute("droppable", "true");
-      listElement.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        listElement.style.border = "2px dashed #007bff";
+      // Bouton pour supprimer la liste
+      const deleteListBtn = document.createElement("button");
+      deleteListBtn.innerText = "Supprimer la liste";
+      deleteListBtn.addEventListener("click", () => {
+        this.boardService.removeList(listIndex);
+        this.renderBoard(this.boardService.board);
       });
-
-      listElement.addEventListener("dragleave", () => {
-        listElement.style.border = "";
-      });
-
-      listElement.addEventListener("drop", (e) => {
-        e.preventDefault();
-        listElement.style.border = "";
-
-        const draggedCardIndex = e.dataTransfer.getData("cardIndex");
-        const draggedListIndex = e.dataTransfer.getData("listIndex");
-
-        if (draggedCardIndex !== null && draggedListIndex !== null) {
-          const draggedCard = this.boardService.board.lists[
-            draggedListIndex
-          ].cards.splice(draggedCardIndex, 1)[0];
-
-          if (draggedCard) {
-            this.boardService.board.lists[listIndex].cards.push(draggedCard);
-            this.boardService.storage.saveBoard(this.boardService.board);
-            this.renderBoard(this.boardService.board);
-          }
-        }
-      });
-
-      // Créer un conteneur pour les cartes et les boutons
-      const listContent = document.createElement("div");
-      listContent.className = "list-content";
+      listElement.appendChild(deleteListBtn);
 
       list.cards.forEach((card, cardIndex) => {
         const cardElement = document.createElement("div");
