@@ -3,14 +3,15 @@ import { List } from "../model/list.js";
 import { Card } from "../model/card.js";
 
 export class BoardService {
-  constructor() {
+  constructor(storage) {
     this.board = null;
+    this.storage = storage; // Ajout du service de stockage
   }
 
-  async loadBoard() {
+  async loadBoard(userId) {
     try {
       const response = await fetch(
-        "http://localhost:8000/index.php?action=getBoard"
+        `http://localhost/archilog/backend/public/index.php?action=getBoard&userId=${userId}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch board");
@@ -37,7 +38,7 @@ export class BoardService {
   async addList(name) {
     try {
       const response = await fetch(
-        "http://localhost:8000/index.php?action=addList",
+        "http://localhost/archilog/backend/public/index.php?action=addList",
         {
           method: "POST",
           headers: {
@@ -52,54 +53,78 @@ export class BoardService {
       }
 
       const newList = await response.json();
-      this.board.addList(new List(newList.name));
+      const list = new List(newList.name);
+      list.id = newList.id; // Assigner l'ID de la liste
+      this.board.addList(list);
     } catch (error) {
       console.error("Error adding list:", error);
     }
   }
 
   async addCard(listIndex, title, description) {
-    const listId = this.board.lists[listIndex].id;
-    const response = await fetch(
-      "http://localhost:8000/index.php?action=addCard",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ listId, title, description }),
+    try {
+      const listId = this.board.lists[listIndex].id;
+      const response = await fetch(
+        "http://localhost/archilog/backend/public/index.php?action=addCard",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ listId, title, description }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to add card");
       }
-    );
-    const newCard = await response.json();
-    this.board.lists[listIndex].addCard(
-      new Card(newCard.title, newCard.description)
-    );
+
+      const newCard = await response.json();
+      const card = new Card(newCard.title, newCard.description);
+      card.id = newCard.id; // Assigner l'ID de la carte
+      this.board.lists[listIndex].addCard(card);
+    } catch (error) {
+      console.error("Error adding card:", error);
+    }
   }
 
   async removeList(listIndex) {
-    const listId = this.board.lists[listIndex].id;
-    await fetch(
-      `http://localhost:8000/index.php?action=deleteList&listId=${listId}`,
-      {
-        method: "DELETE",
+    try {
+      const listId = this.board.lists[listIndex].id;
+      const response = await fetch(
+        `http://localhost/archilog/backend/public/index.php?action=deleteList&listId=${listId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete list");
       }
-    );
-    this.board.lists.splice(listIndex, 1);
+
+      this.board.lists.splice(listIndex, 1);
+    } catch (error) {
+      console.error("Error removing list:", error);
+    }
   }
 
   async removeCard(listIndex, cardIndex) {
-    const cardId = this.board.lists[listIndex].cards[cardIndex].id;
-    await fetch(
-      `http://localhost:8000/index.php?action=deleteCard&cardId=${cardId}`,
-      {
-        method: "DELETE",
-      }
-    );
-    this.board.lists[listIndex].cards.splice(cardIndex, 1);
-    this.storage.saveBoard(this.board);
-  }
+    try {
+      const cardId = this.board.lists[listIndex].cards[cardIndex].id;
+      const response = await fetch(
+        `http://localhost/archilog/backend/public/index.php?action=deleteCard&cardId=${cardId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
-  loadBoard() {
-    return this.board;
+      if (!response.ok) {
+        throw new Error("Failed to delete card");
+      }
+
+      this.board.lists[listIndex].cards.splice(cardIndex, 1);
+    } catch (error) {
+      console.error("Error removing card:", error);
+    }
   }
 }

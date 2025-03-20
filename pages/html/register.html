@@ -1,43 +1,51 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inscription - Ollert</title>
-    <link rel="stylesheet" href="../css/loginRegister.css">
-    <link rel="stylesheet" href="/pages/css/header.css">
-</head>
-<body>
+    <link rel="stylesheet" href="../css/loginRegister.css" />
+    <link rel="stylesheet" href="../css/header.css" />
+  </head>
+  <body>
     <header>
-        <h1>Ollert</h1>
-        <nav>
-            <ul id="menu">
-                <li><a href="/index.html">Accueil</a></li>
-                <li><a href="/pages/html/login.html">Se connecter</a></li>
-                <li><a href="/pages/html/register.html">S'inscrire</a></li>
-            </ul>
-            <button id="menu-toggle">☰</button>
-        </nav>
+      <h1>Ollert</h1>
+      <nav>
+        <ul id="menu">
+          <li><a href="../../index.html">Accueil</a></li>
+          <li><a href="login.html">Se connecter</a></li>
+          <li><a href="register.html">S'inscrire</a></li>
+        </ul>
+        <button id="menu-toggle">☰</button>
+      </nav>
     </header>
 
     <div class="container">
-        <h2>Inscription</h2>
-        <form action="register.php" method="POST">
-            <label for="name">Nom</label>
-            <input type="text" id="name" name="name" required>
+      <h2>Inscription</h2>
+      <form action="register.php" method="POST">
+        <label for="name">Nom</label>
+        <input type="text" id="name" name="name" required />
 
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
 
-            <label for="password">Mot de passe</label>
-            <input type="password" id="password" name="password" required>
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" required />
 
-            <label for="confirm-password">Confirmer le mot de passe</label>
-            <input type="password" id="confirm-password" name="confirm-password" required>
+        <label for="confirm-password">Confirmer le mot de passe</label>
+        <input
+          type="password"
+          id="confirm-password"
+          name="confirm-password"
+          required
+        />
 
-            <button type="submit">S'inscrire</button>
-        </form>
-        <p>Déjà un compte ? <a href="login.html" id="redirectLink">Connectez-vous</a></p>
+        <button type="submit">S'inscrire</button>
+      </form>
+      <p>
+        Déjà un compte ?
+        <a href="login.html" id="redirectLink">Connectez-vous</a>
+      </p>
     </div>
-</body>
+  </body>
 </html>
