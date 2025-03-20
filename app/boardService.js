@@ -10,7 +10,7 @@ export class BoardService {
   async loadBoard() {
     try {
       const response = await fetch(
-        "http://localhost:8000/index.php?action=getBoard"
+        "http://localhost/archilog/backend/public/index.php?action=getBoard"
       );
       if (!response.ok) {
         throw new Error("Failed to fetch board");
@@ -37,7 +37,7 @@ export class BoardService {
   async addList(name) {
     try {
       const response = await fetch(
-        "http://localhost:8000/index.php?action=addList",
+        "http://localhost/archilog/backend/public/index.php?action=addList",
         {
           method: "POST",
           headers: {
@@ -61,7 +61,7 @@ export class BoardService {
   async addCard(listIndex, title, description) {
     const listId = this.board.lists[listIndex].id;
     const response = await fetch(
-      "http://localhost:8000/index.php?action=addCard",
+      "http://localhost/archilog/backend/public/index.php?action=addCard",
       {
         method: "POST",
         headers: {
@@ -79,7 +79,7 @@ export class BoardService {
   async removeList(listIndex) {
     const listId = this.board.lists[listIndex].id;
     await fetch(
-      `http://localhost:8000/index.php?action=deleteList&listId=${listId}`,
+      `http://localhost/archilog/backend/public/index.php?action=deleteList&listId=${listId}`,
       {
         method: "DELETE",
       }
@@ -90,7 +90,7 @@ export class BoardService {
   async removeCard(listIndex, cardIndex) {
     const cardId = this.board.lists[listIndex].cards[cardIndex].id;
     await fetch(
-      `http://localhost:8000/index.php?action=deleteCard&cardId=${cardId}`,
+      `http://localhost/archilog/backend/public/index.php?action=deleteCard&cardId=${cardId}`,
       {
         method: "DELETE",
       }
