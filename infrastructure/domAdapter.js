@@ -12,6 +12,10 @@ export class DOMAdapter {
       listElement.className = "list";
       listElement.innerHTML = `<h3>${list.name}</h3>`;
 
+      // Contenu de la liste
+      const listContent = document.createElement("div");
+      listContent.className = "list-content";
+
       // Bouton pour supprimer la liste
       const deleteListBtn = document.createElement("button");
       deleteListBtn.innerText = "Supprimer la liste";
@@ -21,6 +25,7 @@ export class DOMAdapter {
       });
       listElement.appendChild(deleteListBtn);
 
+      // Ajouter les cartes à la liste
       list.cards.forEach((card, cardIndex) => {
         const cardElement = document.createElement("div");
         cardElement.className = "card";
@@ -47,9 +52,25 @@ export class DOMAdapter {
         listContent.appendChild(cardElement);
       });
 
-      // Créer les boutons pour ajouter une carte et supprimer la liste
-      const buttonsContainer = document.createElement("div");
-      buttonsContainer.className = "buttons-container";
+      // Gestion du drag-and-drop
+      listElement.addEventListener("dragover", (e) => {
+        e.preventDefault();
+      });
+
+      listElement.addEventListener("drop", (e) => {
+        e.preventDefault();
+        const cardIndex = e.dataTransfer.getData("cardIndex");
+        const fromListIndex = e.dataTransfer.getData("listIndex");
+        const card =
+          this.boardService.board.lists[fromListIndex].cards[cardIndex];
+
+        // Déplacer la carte vers la nouvelle liste
+        this.boardService.board.lists[fromListIndex].cards.splice(cardIndex, 1);
+        list.cards.push(card);
+
+        // Re-rendre le tableau
+        this.renderBoard(this.boardService.board);
+      });
 
       // Bouton pour ajouter une carte
       const addCardBtn = document.createElement("button");
@@ -58,24 +79,12 @@ export class DOMAdapter {
         this.openAddCardModal(listIndex);
       });
       addCardBtn.style.marginBottom = "10px";
-      buttonsContainer.appendChild(addCardBtn);
 
-      // Bouton pour supprimer la liste
-      const deleteListBtn = document.createElement("button");
-      deleteListBtn.innerText = "Supprimer la liste";
-      deleteListBtn.style.backgroundColor = "red";
-      deleteListBtn.style.color = "white";
-      deleteListBtn.style.marginBottom = "10px";
-      deleteListBtn.addEventListener("click", () => {
-        this.boardService.removeList(listIndex);
-        this.renderBoard(this.boardService.board);
-      });
-      buttonsContainer.appendChild(deleteListBtn);
-
-      // Ajouter le contenu de la liste et les boutons à la liste
+      // Ajouter les éléments à la liste
       listElement.appendChild(listContent);
-      listElement.appendChild(buttonsContainer);
+      listElement.appendChild(addCardBtn);
 
+      // Ajouter la liste au tableau
       boardContainer.appendChild(listElement);
     });
   }
@@ -92,7 +101,7 @@ export class DOMAdapter {
     if (oldEditBtn) oldEditBtn.remove();
 
     // Ajouter le bouton Modifier
-    let editCardBtn = document.createElement("button");
+    const editCardBtn = document.createElement("button");
     editCardBtn.id = "edit-card-btn";
     editCardBtn.innerText = "Modifier la carte";
     editCardBtn.style.backgroundColor = "orange";
@@ -100,7 +109,6 @@ export class DOMAdapter {
     editCardBtn.style.marginBottom = "10px";
 
     editCardBtn.addEventListener("click", () => {
-      // Appeler la méthode pour ouvrir le modal d'édition de la carte
       this.openEditCardModal(listIndex, cardIndex, card);
     });
 
@@ -126,7 +134,9 @@ export class DOMAdapter {
 
     // Fermer la modale en cliquant en dehors du contenu
     modal.addEventListener("click", (event) => {
-      modal.style.display = "none";
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
     });
 
     // Fermer la modale en cliquant sur la croix
@@ -158,7 +168,7 @@ export class DOMAdapter {
       if (title) {
         this.boardService.addCard(listIndex, title, description);
         this.renderBoard(this.boardService.board);
-        modal.style.display = "none"; // ✅ Fermer le modal après l'ajout
+        modal.style.display = "none"; // Fermer le modal après l'ajout
       } else {
         alert("Le titre est obligatoire !");
       }
@@ -181,6 +191,7 @@ export class DOMAdapter {
       }
     };
   }
+
   openAddListModal() {
     const modal = document.getElementById("add-list-modal");
     const saveButton = document.getElementById("save-list");
@@ -200,7 +211,7 @@ export class DOMAdapter {
       if (listName) {
         this.boardService.addList(listName);
         this.renderBoard(this.boardService.board);
-        modal.style.display = "none"; // ✅ Fermer le modal après l'ajout
+        modal.style.display = "none"; // Fermer le modal après l'ajout
       } else {
         alert("Le nom de la liste est obligatoire !");
       }
@@ -250,7 +261,7 @@ export class DOMAdapter {
         card.description = newDescription;
         this.boardService.storage.saveBoard(this.boardService.board);
         this.renderBoard(this.boardService.board);
-        modal.style.display = "none"; // ✅ Fermer le modal après la sauvegarde
+        modal.style.display = "none"; // Fermer le modal après la sauvegarde
       } else {
         alert("Le titre est obligatoire !");
       }

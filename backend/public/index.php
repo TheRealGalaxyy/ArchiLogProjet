@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../config/connexion.php';
 require_once '../dao/BoardDAO.php';
 require_once '../dao/ListDAO.php';
@@ -11,7 +12,7 @@ header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
-    exit();
+    exit;
 }
 
 $action = $_GET['action'] ?? '';
@@ -20,10 +21,23 @@ $boardDAO = new BoardDAO($db);
 $listDAO = new ListDAO($db);
 $cardDAO = new CardDAO($db);
 
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Non autorisé']);
+    exit;
+}
+
+$userId = $_SESSION['user_id'];
+
 switch ($action) {
     case 'getBoard':
-        $board = $boardDAO->getBoardById(1);
-        $lists = $listDAO->getListsByBoardId(1);
+        $board = $boardDAO->getBoardByUserId($userId);
+        if (!$board) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Aucun tableau trouvé']);
+            break;
+        }
+        $lists = $listDAO->getListsByBoardId($board['id']);
         foreach ($lists as &$list) {
             $list['cards'] = $cardDAO->getCardsByListId($list['id']);
         }
@@ -40,8 +54,7 @@ switch ($action) {
             echo json_encode(['error' => 'Le nom de la liste est requis.']);
             break;
         }
-
-        $listDAO->addList(1, $data['name']);
+        $listDAO->addList($board['id'], $data['name']);
         echo json_encode(['name' => $data['name']]);
         break;
 

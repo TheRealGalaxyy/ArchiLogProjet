@@ -11,27 +11,26 @@ class BoardDAO
         $this->db = $db;
     }
 
-    public function addBoard(string $name): void
+    public function addBoard(string $name, int $userId): void
     {
-        $query = 'INSERT INTO boards (name) VALUES (:name)';
+        $query = 'INSERT INTO boards (name, user_id) VALUES (:name, :user_id)';
         $stmt = $this->db->prepare($query);
-        $stmt->execute([':name' => $name]);
+        $stmt->execute([':name' => $name, ':user_id' => $userId]);
     }
 
-    public function getBoardById(int $boardId): array
+    public function getBoardByUserId(int $userId): array
     {
-        $query = 'SELECT * FROM boards WHERE id = :board_id';
+        $query = 'SELECT * FROM boards WHERE user_id = :user_id';
         $stmt = $this->db->prepare($query);
-        $stmt->execute([':board_id' => $boardId]);
-
+        $stmt->execute([':user_id' => $userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getAllBoards(): array
+    public function getAllBoardsByUserId(int $userId): array
     {
-        $query = 'SELECT * FROM boards';
-        $stmt = $this->db->query($query);
-
+        $query = 'SELECT * FROM boards WHERE user_id = :user_id';
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':user_id' => $userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
