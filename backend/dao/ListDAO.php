@@ -1,6 +1,7 @@
 <?php
 
 require_once '../config/connexion.php';
+require_once '../../discordWebhook.php';
 
 class ListDAO
 {
@@ -23,6 +24,10 @@ class ListDAO
             ':board_id' => $boardId,
             ':name' => $name
         ]);
+
+        // Appel au webhook
+        $webhookUrl = getWebhookUrl();
+        sendMessage($webhookUrl, "Nouvelle liste", "Nom de la liste : $name");
     }
 
     public function getListsByBoardId(int $boardId): array

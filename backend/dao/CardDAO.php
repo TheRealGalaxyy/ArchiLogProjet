@@ -1,6 +1,7 @@
 <?php
 
 require_once '../config/connexion.php';
+require_once '../../discordWebhook.php';
 
 class CardDAO
 {
@@ -20,6 +21,10 @@ class CardDAO
             ':title' => $title,
             ':description' => $description
         ]);
+
+        // Appel au webhook
+        $webhookUrl = getWebhookUrl();
+        sendMessage($webhookUrl, "Nouvelle carte", "Nom de la carte : $title, Description : $description");
     }
 
     public function getCardsByListId(int $listId): array
